@@ -1,14 +1,17 @@
 /* =========================================================
-   Fogo roxo — fallback do modo escuro do SIGAA utils.
-   Ativo quando o modo escuro está ligado e não há papel de
-   parede do usuário. Vive fora do body (mesma razão da
-   camada do papel de parede: o filter do modo escuro viraria
-   containing block / inverteria as cores).
+   Fogo roxo — papel de parede pré-definido do SIGAA utils
+   (opção "Fogo Roxo" dos rádios do painel, escolhida quando o
+   papel personalizado está desligado). Ativo quando o preset
+   atual é 'fogo_roxo' e não há camada de papel personalizado.
+   Não depende do modo escuro — é escolha explícita, não mais
+   fallback automático do escuro. Vive fora do body (mesma
+   razão da camada do papel de parede: o filter do modo escuro
+   viraria containing block / inverteria as cores).
    Registrado no manifest.json. Expõe SIGAAUtils.updateFire,
    chamado pelo dark-mode.js e pelo settings-ui.js sempre que
-   o estado (escuro/papel) muda. updateFire é o único dono da
-   classe wallpaper-active (body transparente): ela vale
-   quando camada OU fogo estão ativos.
+   o estado (escuro/papel/preset) muda. updateFire é o único
+   dono da classe wallpaper-active (body transparente): ela
+   vale quando camada OU fogo estão ativos.
    ========================================================= */
 (function () {
   'use strict';
@@ -18,7 +21,9 @@
 
   function updateFire() {
     const temLayer = SIGAAUtils.hasWallpaper();
-    const ativo = SIGAAUtils.isDarkMode() && !temLayer;
+    // O fogo é o preset "Fogo Roxo" — independe do modo escuro.
+    // getPreset vive no settings-ui.js (resolvido em tempo de chamada).
+    const ativo = SIGAAUtils.getPreset() === 'fogo_roxo' && !temLayer;
     if (ativo && !fogo) {
       iniciarFogo();
     } else if (!ativo && fogo) {

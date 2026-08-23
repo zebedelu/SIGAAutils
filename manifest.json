@@ -13,6 +13,7 @@
         "fire.js",
         "notas.js",
         "settings-ui.js",
+        "login-auto.js",
         "calendario.js"
       ],
       "run_at": "document_idle"

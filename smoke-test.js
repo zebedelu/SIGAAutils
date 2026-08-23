@@ -59,6 +59,7 @@ const documentStub = {
   createElement(tag) { const el = mkEl(); el.tag = tag; registry.push(el); return el; },
   addEventListener() {},
   querySelectorAll() { return []; },
+  querySelector() { return null; }, // login-auto.js não acha inputs no stub
 };
 
 const store = {};
@@ -67,6 +68,7 @@ const localStorageStub = {
   setItem(k, v) { store[k] = String(v); },
 };
 
+global.location = { pathname: '/sigaa/index.do' }; // fora da tela de login
 global.window = global;
 global.document = documentStub;
 global.localStorage = localStorageStub;
@@ -74,7 +76,7 @@ global.devicePixelRatio = 1;
 global.addEventListener = () => {};
 
 // ---------- Carrega os módulos na ordem do manifest ----------
-const files = ['dark-mode.js', 'wallpaper.js', 'fire.js', 'notas.js', 'settings-ui.js'];
+const files = ['dark-mode.js', 'wallpaper.js', 'fire.js', 'notas.js', 'settings-ui.js', 'login-auto.js'];
 for (const f of files) {
   const src = fs.readFileSync(path.join(__dirname, f), 'utf8');
   new Function(src + `\n//# sourceURL=${f}`)();
@@ -89,7 +91,8 @@ function ok(cond, msg) {
 const S = global.SIGAAUtils;
 // 1. Namespace completo (todos os módulos exportaram)
 for (const fn of ['setDarkMode', 'isDarkMode', 'aplicarPapelDeParede',
-  'removerPapelDeParede', 'hasWallpaper', 'urlValida', 'updateFire']) {
+  'removerPapelDeParede', 'hasWallpaper', 'urlValida', 'updateFire',
+  'getPreset', 'setPreset', 'getLoginAuto']) {
   ok(typeof S[fn] === 'function', `SIGAAUtils.${fn} exposto`);
 }
 
@@ -147,5 +150,23 @@ for (const f of files) {
   new Function(src + `\n//# sourceURL=${f}-reload.js`)();
 }
 ok(global.SIGAAUtils.isDarkMode() === true, 'boot restaura modo escuro salvo');
+
+// 10. Papeis de parede pré-definidos (rádios): o preset controla o fogo
+const S2 = global.SIGAAUtils;
+ok(S2.getPreset() === 'nenhum', 'preset padrão é Nenhum');
+S2.setPreset('fogo_roxo');
+ok(S2.getPreset() === 'fogo_roxo', 'setPreset grava fogo_roxo');
+ok(store['sigaa_utils_papel_preset'] === 'fogo_roxo', 'sigaa_utils_papel_preset gravado');
+S2.updateFire();
+ok(JSON.stringify(toggles[toggles.length - 1]) === JSON.stringify(['wallpaper-active', false]),
+  'preset fogo_roxo sem WebGL no stub: fogo não inicia, wallpaper-active = false');
+S2.setPreset('nenhum');
+ok(S2.getPreset() === 'nenhum', 'setPreset volta p/ Nenhum');
+
+// 11. Login automático: opção criada no painel + getLoginAuto reflete o localStorage
+ok(S2.getLoginAuto() === false, 'login automático começa desligado');
+ok(registry.some(el => el.textContent === 'Login Automático'), 'opção "Login Automático" criada no painel');
+store['sigaa_utils_login_auto'] = 'true';
+ok(S2.getLoginAuto() === true, 'getLoginAuto reflete sigaa_utils_login_auto');
 
 console.log('\nTudo certo — wiring OK.');

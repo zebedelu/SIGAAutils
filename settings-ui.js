@@ -2,8 +2,10 @@
    Interface e boot do SIGAA utils.
    Último script listado no manifest.json: consome os módulos
    dark-mode.js, wallpaper.js e fire.js via SIGAAUtils (já
-   carregados). Constrói o botão ⚙ e o painel de
-   configurações e restaura as preferências salvas em
+   carregados). Constrói o botão ⚙, o painel de
+   configurações e os rádios de papeis de parede
+   pré-definidos (array PRESETS, visíveis só sem papel
+   personalizado), e restaura as preferências salvas em
    localStorage (sigaa_utils_*). Botão e painel são anexados
    ao document.documentElement — o filter do modo escuro no
    body quebraria o position: fixed deles.
@@ -14,7 +16,36 @@
   const LS_DARK = 'sigaa_utils_modo_escuro'; // lido no boot (quem grava é o dark-mode.js)
   const LS_PAPEL_ENABLED = 'sigaa_utils_papel_enabled';
   const LS_PAPEL_URL = 'sigaa_utils_papel_url';
+  const LS_PRESET = 'sigaa_utils_papel_preset';
+  const LS_LOGIN_AUTO = 'sigaa_utils_login_auto';
   const S = window.SIGAAUtils; // objeto compartilhado entre os módulos
+
+  // Papeis de parede pré-definidos (rádios do painel). Aparecem só quando o
+  // papel personalizado está desligado. Adicione { id, label } p/ crescer a lista.
+  const PRESETS = [
+    { id: 'nenhum', label: 'Nenhum' },
+    { id: 'fogo_roxo', label: 'Fogo Roxo' },
+  ];
+
+  // Preset selecionado — lido pelo fire.js via updateFire. Nenhum é o padrão.
+  function getPreset() {
+    const v = localStorage.getItem(LS_PRESET);
+    return PRESETS.some((p) => p.id === v) ? v : 'nenhum';
+  }
+
+  // Seleciona um preset: persiste e reconcilia o fogo (updateFire)
+  function setPreset(id) {
+    localStorage.setItem(LS_PRESET, id);
+    S.updateFire();
+  }
+
+  // Login Automático — lido pelo login-auto.js na tela de login
+  function getLoginAuto() {
+    return localStorage.getItem(LS_LOGIN_AUTO) === 'true';
+  }
+
+  window.SIGAAUtils = window.SIGAAUtils || {};
+  Object.assign(window.SIGAAUtils, { setPreset, getPreset, getLoginAuto });
 
   function anexarNoRoot(el) {
     // ponytail: botão/painel/camada fora do body — o filter do modo escuro
@@ -64,15 +95,67 @@
     inputUrl.className = 'url-input';
     painel.appendChild(inputUrl);
 
+    // Papeis de parede pré-definidos (rádios) — visíveis só sem papel personalizado
+    const grupoPresets = document.createElement('div');
+    grupoPresets.id = 'preset-wallpapers';
+    const radios = {};
+    for (const p of PRESETS) {
+      const label = document.createElement('label');
+      label.className = 'settings-item';
+      const radio = document.createElement('input');
+      radio.type = 'radio';
+      radio.name = 'preset-papel'; // um só escolhido por vez
+      radio.value = p.id;
+      radio.addEventListener('change', () => setPreset(p.id));
+      radios[p.id] = radio;
+      const span = document.createElement('span');
+      span.textContent = p.label;
+      label.appendChild(radio);
+      label.appendChild(span);
+      grupoPresets.appendChild(label);
+    }
+    painel.appendChild(grupoPresets);
+
+    // Opção: Login Automático (consumido pelo login-auto.js)
+    const labelLogin = document.createElement('label');
+    labelLogin.className = 'settings-item';
+    const checkLogin = document.createElement('input');
+    checkLogin.type = 'checkbox';
+    const spanLogin = document.createElement('span');
+    spanLogin.textContent = 'Login Automático';
+    labelLogin.appendChild(checkLogin);
+    labelLogin.appendChild(spanLogin);
+    painel.appendChild(labelLogin);
+
+    checkLogin.onchange = () => {
+      localStorage.setItem(LS_LOGIN_AUTO, checkLogin.checked ? 'true' : 'false');
+    };
+
     // ---- Comportamento do papel de parede ----
     function mostrarInput(visible) {
       inputUrl.style.display = visible ? '' : 'none';
+    }
+
+    // Sincroniza os rádios com o estado: custom ativo esconde/desativa e garante
+    // Nenhum marcado; custom desligado restaura a seleção salva.
+    function sincronizarPresets(customAtivo) {
+      grupoPresets.style.display = customAtivo ? 'none' : '';
+      for (const id in radios) radios[id].disabled = customAtivo;
+      const atual = getPreset();
+      if (radios[atual]) radios[atual].checked = true;
+    }
+
+    function definirPreset(id) {
+      if (radios[id]) radios[id].checked = true;
+      setPreset(id);
     }
 
     check.onchange = () => {
       if (check.checked) {
         localStorage.setItem(LS_PAPEL_ENABLED, 'true');
         mostrarInput(true);
+        definirPreset('nenhum'); // rádios somem e voltam ao padrão Nenhum
+        sincronizarPresets(true);
         const salvo = localStorage.getItem(LS_PAPEL_URL) || '';
         inputUrl.value = salvo;
         if (S.urlValida(salvo)) S.aplicarPapelDeParede(salvo);
@@ -81,6 +164,7 @@
         mostrarInput(false);
         S.removerPapelDeParede();
         localStorage.setItem(LS_PAPEL_ENABLED, 'false');
+        sincronizarPresets(false); // rádios voltam com a seleção salva
         S.updateFire();
       }
     };
@@ -125,14 +209,19 @@
     if (localStorage.getItem(LS_DARK) === 'true') S.setDarkMode(true);
 
     check.checked = localStorage.getItem(LS_PAPEL_ENABLED) === 'true';
+    checkLogin.checked = getLoginAuto(); // restaura o estado do checkbox
     const papelSalvo = localStorage.getItem(LS_PAPEL_URL) || '';
     inputUrl.value = papelSalvo;
     if (check.checked) {
       mostrarInput(true);
+      definirPreset('nenhum'); // custom ativo força Nenhum nos pré-definidos
+      sincronizarPresets(true);
       if (S.urlValida(papelSalvo)) S.aplicarPapelDeParede(papelSalvo);
+    } else {
+      sincronizarPresets(false); // restaura o rádio salvo (fogo inicia se for fogo_roxo)
     }
 
-    // Reconcilia o fogo (escuro + sem papel de parede) com o estado restaurado
+    // Reconcilia o fogo (preset fogo_roxo + sem papel personalizado) com o estado restaurado
     S.updateFire();
   }
 

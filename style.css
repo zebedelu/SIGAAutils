@@ -42,6 +42,11 @@ body.wallpaper-active {
    box-sizing: border-box;
 }
 
+/* Papeis de parede pré-definidos (rádios) */
+#preset-wallpapers {
+   margin-top: 4px;
+}
+
 .descricao > * {
    font-size: 150%;
    padding: 15px;
@@ -71,4 +76,10 @@ th:nth-child(2) {
 }
 .nota {
    font-weight: bolder;
+}
+
+/* Botão de salvar credenciais na tela de login (login-auto.js) */
+.login-auto-btn {
+   margin-left: 8px;
+   cursor: pointer;
 }
