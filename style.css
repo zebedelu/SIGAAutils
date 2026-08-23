@@ -3,10 +3,13 @@
    top: 10px;
    left: 10px;
    z-index: 999999;
-   padding: 8px 12px;
+   width: 32px;
+   height: 32px;
+   padding: 0;
    cursor: pointer;
-   border-radius: 15px;
+   border-radius: 50%;
    border: 2px solid black;
+   font-size: 16px;
 }
 
 /* A camada do papel de parede pinta atrás do body — libera o fundo p/ ela aparecer */
@@ -19,14 +22,17 @@ body.wallpaper-active {
    top: 50px;
    left: 10px;
    z-index: 999999;
+   min-width: 220px;
    background: #fff;
    border: 1px solid #ccc;
    border-radius: 8px;
    padding: 10px;
    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+   font-size: 14px;
 }
 
 .settings-item {
+   display: block; /* cada item na própria linha */
    padding: 8px 12px;
    cursor: pointer;
 }
@@ -37,14 +43,20 @@ body.wallpaper-active {
 
 .url-input {
    margin-top: 8px;
-   padding: 6px;
-   width: 100%;
+   padding: 4px;
+   width: 60%;
    box-sizing: border-box;
+   font-size: 12px;
 }
 
 /* Papeis de parede pré-definidos (rádios) */
 #preset-wallpapers {
    margin-top: 4px;
+}
+
+/* Rádios de preset aninhados sob o papel personalizado */
+#preset-wallpapers .settings-item {
+   padding-left: 24px;
 }
 
 .descricao > * {
@@ -82,4 +94,8 @@ th:nth-child(2) {
 .login-auto-btn {
    margin-left: 8px;
    cursor: pointer;
+}
+
+.login-auto-msg {
+   font-weight: bold;
 }

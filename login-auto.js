@@ -52,6 +52,21 @@
     td.appendChild(b);
   }
 
+  // Esconde os campos de credenciais e mostra a mensagem — chamado só quando
+  // vai submeter de verdade (com erro na tela os campos ficam visíveis p/ corrigir)
+  function esconderFormulario(el, submit) {
+    for (const input of [el.user, el.senha]) {
+      const tr = input.closest && input.closest('tr');
+      if (tr) tr.style.display = 'none';
+    }
+    if (submit) submit.style.display = 'none';
+    const msg = document.createElement('div');
+    msg.className = 'login-auto-msg';
+    msg.textContent = 'Logando automaticamente...';
+    const alvo = submit && submit.parentNode ? submit.parentNode : el.user.closest && el.user.closest('table');
+    if (alvo) alvo.appendChild(msg);
+  }
+
   function autoLogin() {
     const S = window.SIGAAUtils;
     if (!S || typeof S.getLoginAuto !== 'function' || !S.getLoginAuto()) return;
@@ -64,7 +79,10 @@
     el.senha.value = senha;
     if (user && senha && !temErroLogin()) {
       const submit = el.user.form && el.user.form.querySelector('input[type="submit"], button[type="submit"]');
-      if (submit) submit.click();
+      if (submit) {
+        esconderFormulario(el, submit);
+        submit.click();
+      }
     }
   }
 

@@ -67,12 +67,20 @@
     painel.style.display = 'none';
     anexarNoRoot(painel);
 
-    // Opção: Alterar Modo Escuro/Claro
-    const itemModo = document.createElement('div');
-    itemModo.className = 'settings-item';
-    itemModo.textContent = 'Alterar Modo Escuro/Claro';
-    itemModo.onclick = () => S.setDarkMode(!S.isDarkMode());
-    painel.appendChild(itemModo);
+    // Opção: Alterar Modo Escuro/Claro (checkbox mostra o estado ativo)
+    const labelModo = document.createElement('label');
+    labelModo.className = 'settings-item';
+    const checkModo = document.createElement('input');
+    checkModo.type = 'checkbox';
+    const spanModo = document.createElement('span');
+    spanModo.textContent = 'Modo Escuro';
+    labelModo.appendChild(checkModo);
+    labelModo.appendChild(spanModo);
+    painel.appendChild(labelModo);
+
+    checkModo.onchange = () => {
+      S.setDarkMode(checkModo.checked);
+    };
 
     // Opção: Papel de Parede personalizado
     const labelPapel = document.createElement('label');
@@ -207,6 +215,7 @@
 
     // ---- Restaura as configurações salvas ----
     if (localStorage.getItem(LS_DARK) === 'true') S.setDarkMode(true);
+    checkModo.checked = S.isDarkMode(); // checkbox reflete o estado real
 
     check.checked = localStorage.getItem(LS_PAPEL_ENABLED) === 'true';
     checkLogin.checked = getLoginAuto(); // restaura o estado do checkbox
