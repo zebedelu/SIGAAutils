@@ -14,7 +14,8 @@
         "notas.js",
         "settings-ui.js",
         "login-auto.js",
-        "calendario.js"
+        "calendario.js",
+        "menu-animacao.js"
       ],
       "run_at": "document_idle"
     }
