@@ -1,0 +1,38 @@
+#button-mode {
+   position: fixed;
+   top: 10px;
+   left: 10px;
+   z-index: 999999;
+   padding: 8px 12px;
+   cursor: pointer;
+   border-radius: 15px;
+   border: 2px solid black;
+}
+
+#settings-panel {
+   position: fixed;
+   top: 50px;
+   left: 10px;
+   z-index: 999999;
+   background: #fff;
+   border: 1px solid #ccc;
+   border-radius: 8px;
+   padding: 10px;
+   box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.settings-item {
+   padding: 8px 12px;
+   cursor: pointer;
+}
+
+.settings-item:hover {
+   background: #f0f0f0;
+}
+
+.url-input {
+   margin-top: 8px;
+   padding: 6px;
+   width: 100%;
+   box-sizing: border-box;
+}
