@@ -11,6 +11,7 @@
 
   // ===================== Constantes ==========================
   const STYLE_ID = "my-dark-mode";
+  const LAYER_ID = "wallpaper-layer";
   const LS_DARK = "sigaa_utils_modo_escuro";
   const LS_PAPEL_ENABLED = "sigaa_utils_papel_enabled";
   const LS_PAPEL_URL = "sigaa_utils_papel_url";
@@ -28,7 +29,9 @@
       const style = document.createElement("style");
       style.id = STYLE_ID;
       style.textContent = `
-        html > * {
+        /* ponytail: filtra só o body — botão/painel/camada vivem fora dele
+           (html > * casaria com eles agora que são filhos do documentElement) */
+        body {
             background: #111 !important;
             filter: invert(1) hue-rotate(180deg) !important;
         }
@@ -37,8 +40,23 @@
         video,
         picture,
         canvas,
-        svg {
+        svg,
+        .nota {
             filter: invert(1) hue-rotate(180deg) !important;
+        }
+
+        /* Painel e botão vivem fora do body filtrado — estiliza para o escuro */
+        #button-mode,
+        #settings-panel {
+            background: #222 !important;
+            color: #eee !important;
+            border-color: #555 !important;
+        }
+        #settings-panel {
+            box-shadow: none !important;
+        }
+        #settings-panel .settings-item:hover {
+            background: #333 !important;
         }
       `;
       document.documentElement.appendChild(style);
@@ -55,21 +73,31 @@
   function aplicarPapelDeParede(url) {
     // Escapa aspas e barras invertidas para não quebrar o CSS
     const limpa = url.replace(/["\\]/g, "\\$&");
-    const body = document.body;
-    body.style.setProperty("background-image", `url("${limpa}")`, "important");
-    body.style.setProperty("background-size", "cover", "important");
-    body.style.setProperty("background-position", "center", "important");
-    body.style.setProperty("background-repeat", "no-repeat", "important");
+    let layer = document.getElementById(LAYER_ID);
+    if (!layer) {
+      layer = document.createElement("div");
+      layer.id = LAYER_ID;
+      Object.assign(layer.style, {
+        position: "fixed",
+        inset: "0",
+        zIndex: "-1",
+        pointerEvents: "none",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      });
+      // ponytail: fora do body filtrado p/ manter viewport-fixed e cores naturais
+      document.documentElement.appendChild(layer);
+    }
+    layer.style.backgroundImage = `url("${limpa}")`;
+    // camada pinta atrás do body — deixa o fundo do body transparente p/ ela aparecer
+    document.body.classList.add("wallpaper-active");
   }
 
   function removerPapelDeParede() {
-    const props = [
-      "background-image",
-      "background-size",
-      "background-position",
-      "background-repeat",
-    ];
-    props.forEach((p) => document.body.style.removeProperty(p));
+    const layer = document.getElementById(LAYER_ID);
+    if (layer) layer.remove();
+    document.body.classList.remove("wallpaper-active");
   }
 
   function urlValida(url) {
@@ -77,19 +105,25 @@
   }
 
   // ==================== Interface ============================
+  function anexarNoRoot(el) {
+    // ponytail: botão/painel/camada fora do body — o filter do modo escuro
+    // quebraria o position: fixed deles (containing block = body)
+    document.documentElement.appendChild(el);
+  }
+
   function main() {
     // ---- Botão de engrenagem (estilo em style.css) ----
     const botao = document.createElement("button");
     botao.id = "button-mode";
     botao.textContent = "⚙";
     botao.title = "Configurações";
-    document.body.appendChild(botao);
+    anexarNoRoot(botao);
 
     // ---- Painel de configurações ----
     const painel = document.createElement("div");
     painel.id = "settings-panel";
     painel.style.display = "none";
-    document.body.appendChild(painel);
+    anexarNoRoot(painel);
 
     // Opção: Alterar Modo Escuro/Claro
     const itemModo = document.createElement("div");
@@ -126,6 +160,7 @@
 
     check.onchange = () => {
       if (check.checked) {
+        localStorage.setItem(LS_PAPEL_ENABLED, "true");
         mostrarInput(true);
         const salvo = localStorage.getItem(LS_PAPEL_URL) || "";
         inputUrl.value = salvo;
@@ -142,8 +177,6 @@
       if (urlValida(url)) {
         aplicarPapelDeParede(url);
         localStorage.setItem(LS_PAPEL_URL, url);
-        localStorage.setItem(LS_PAPEL_ENABLED, "true");
-        check.checked = true;
       } else {
         // URL inválida ou vazia: remove o papel de parede
         removerPapelDeParede();
@@ -184,6 +217,45 @@
       mostrarInput(true);
       if (urlValida(papelSalvo)) aplicarPapelDeParede(papelSalvo);
     }
+
+    let AllNotas = document.querySelectorAll(".nota");
+    AllNotas.forEach(element => {
+      let cor = "lime";
+      let nota = Number(element.textContent);
+      
+      if (nota < 6) {
+        cor = "tomato";
+      } else if (nota < 8) {
+        cor = "orange";
+      } else if (nota == 10) {
+        cor = "plum";
+      }
+
+      element.style.color = cor;
+    });
+
+    // Faltas: penúltima nota de cada linha (classe .nota por engano do SIGAA).
+    // Gradiente RGB verde (0 faltas) → vermelho (FALTAS_MAX faltas).
+    const FALTAS_MAX = 25; // ponytail: ~25% de faltas numa disciplina de 80 aulas; ajuste se precisar
+    document.querySelectorAll("tr").forEach(tr => {
+      const notas = tr.querySelectorAll(".nota");
+      if (notas.length < 2) return;
+      const faltas = Number(notas[notas.length - 2].textContent);
+      if (Number.isNaN(faltas)) return;
+      const t = Math.min(faltas / FALTAS_MAX, 1);
+      notas[notas.length - 2].style.color =
+        `rgb(${Math.round(255 * t)}, ${Math.round(255 * (1 - t))}, 0)`;
+    });
+
+    // Situação (última nota da linha): primeiro caractere "R" (REP/REC/REPF...)
+    // → vermelho; qualquer outra (APR, APRN, APC...) → verde.
+    document.querySelectorAll("tr").forEach(tr => {
+      const notas = tr.querySelectorAll(".nota");
+      if (notas.length < 1) return;
+      const situacao = notas[notas.length - 1];
+      const s = situacao.textContent.trim();
+      situacao.style.color = s.charAt(0) === "R" ? "tomato" : "lime";
+    });
   }
 
   // ============ Inicialização (DOM pronto) ===================

@@ -9,6 +9,11 @@
    border: 2px solid black;
 }
 
+/* A camada do papel de parede pinta atrás do body — libera o fundo p/ ela aparecer */
+body.wallpaper-active {
+   background: transparent !important;
+}
+
 #settings-panel {
    position: fixed;
    top: 50px;
@@ -35,4 +40,35 @@
    padding: 6px;
    width: 100%;
    box-sizing: border-box;
+}
+
+.descricao > * {
+   font-size: 150%;
+   padding: 15px;
+}
+
+td.info {
+    text-align: right !important;
+    font-size: 150% !important;
+}
+.info > center {
+   display: none;
+}
+th[width="15%"] {
+    display: none;
+}
+th:nth-child(2) {
+    text-align: right !important;
+}
+.foto img {
+   aspect-ratio: 1/1 !important;
+   border-radius: 100%;
+   height :auto !important;
+}
+
+#menu-usuario li {
+   width: 49% !important;
+}
+.nota {
+   font-weight: bolder;
 }
