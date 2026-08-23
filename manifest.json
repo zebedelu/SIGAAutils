@@ -7,7 +7,14 @@
     {
       "matches": ["https://sig.ifc.edu.br/*"],
       "css": ["style.css"],
-      "js": ["content.js"],
+      "js": [
+        "dark-mode.js",
+        "wallpaper.js",
+        "fire.js",
+        "notas.js",
+        "settings-ui.js",
+        "calendario.js"
+      ],
       "run_at": "document_idle"
     }
   ]
