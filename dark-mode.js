@@ -34,9 +34,10 @@
           filter: invert(1) hue-rotate(180deg) !important;
       }
 
-      /* Painel e botão vivem fora do body filtrado — estiliza para o escuro */
+      /* Painel, botão e toast vivem fora do body filtrado — estiliza para o escuro */
       #button-mode,
-      #settings-panel {
+      #settings-panel,
+      #update-toast {
           background: #222 !important;
           color: #eee !important;
           border-color: #555 !important;
@@ -46,6 +47,15 @@
       }
       #settings-panel .settings-item:hover {
           background: #333 !important;
+      }
+      #update-toast .update-toast-text {
+          color: #eee !important;
+      }
+      #update-toast .update-toast-fechar {
+          color: #aaa !important;
+      }
+      #update-toast .update-toast-fechar:hover {
+          color: #fff !important;
       }
 
       /* Fogo roxo (vive fora do body) — sem re-inversão */

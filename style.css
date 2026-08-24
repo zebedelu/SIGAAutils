@@ -99,3 +99,59 @@ th:nth-child(2) {
 .login-auto-msg {
    font-weight: bold;
 }
+
+/* Aviso de atualização (atualizacao.js) — canto superior direito */
+#update-toast {
+   position: fixed;
+   top: 16px;
+   right: 16px;
+   z-index: 1000000;
+   display: flex;
+   align-items: center;
+   gap: 8px;
+   max-width: 320px;
+   background: #fff;
+   border: 1px solid #ccc;
+   border-radius: 8px;
+   padding: 10px 12px;
+   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+   font-size: 14px;
+}
+
+#update-toast .update-toast-dot {
+   flex: 0 0 auto;
+   width: 10px;
+   height: 10px;
+   border-radius: 50%;
+   background: #e02424;
+   box-shadow: 0 0 6px rgba(224, 36, 36, 0.8);
+}
+
+#update-toast .update-toast-text {
+   color: #111;
+}
+
+#update-toast .update-toast-link {
+   color: #6d28d9;
+   font-weight: bold;
+   text-decoration: none;
+   white-space: nowrap;
+}
+
+#update-toast .update-toast-link:hover {
+   text-decoration: underline;
+}
+
+#update-toast .update-toast-fechar {
+   cursor: pointer;
+   margin-left: 4px;
+   border: none;
+   background: none;
+   font-size: 16px;
+   line-height: 1;
+   color: #666;
+}
+
+#update-toast .update-toast-fechar:hover {
+   color: #000;
+}

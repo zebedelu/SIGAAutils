@@ -15,7 +15,8 @@
         "settings-ui.js",
         "login-auto.js",
         "calendario.js",
-        "menu-animacao.js"
+        "menu-animacao.js",
+        "atualizacao.js"
       ],
       "run_at": "document_idle"
     }

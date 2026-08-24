@@ -6,9 +6,11 @@
    módulos na ordem do manifest e verificar que o namespace
    SIGAAUtils conecta e que as transições de estado
    (escuro / papel de parede / fogo) se reconciliam via
-   updateFire. Não testa o shader WebGL (sem gl no stub o
-   fogo só não inicia, comportamento idêntico ao navegador
-   sem WebGL).
+   updateFire. O atualizacao.js entra com stubs de fetch,
+   chrome.runtime.getManifest e timers (o tick de 60s não
+   pode segurar o processo). Não testa o shader WebGL (sem
+   gl no stub o fogo só não inicia, comportamento idêntico
+   ao navegador sem WebGL).
    ========================================================= */
 'use strict';
 
@@ -75,8 +77,15 @@ global.localStorage = localStorageStub;
 global.devicePixelRatio = 1;
 global.addEventListener = () => {};
 
+// ---------- Stubs p/ o atualizacao.js ----------
+global.chrome = { runtime: { getManifest: () => ({ version: '1.0.0' }) } };
+global.fetch = () => Promise.resolve({ ok: true, text: () => Promise.resolve('9.9.9') });
+// Sem timers reais no smoke: o tick de 60s do atualizacao.js não pode segurar o processo
+global.setTimeout = () => 0;
+global.clearTimeout = () => {};
+
 // ---------- Carrega os módulos na ordem do manifest ----------
-const files = ['dark-mode.js', 'wallpaper.js', 'fire.js', 'notas.js', 'settings-ui.js', 'login-auto.js'];
+const files = ['dark-mode.js', 'wallpaper.js', 'fire.js', 'notas.js', 'settings-ui.js', 'login-auto.js', 'atualizacao.js'];
 for (const f of files) {
   const src = fs.readFileSync(path.join(__dirname, f), 'utf8');
   new Function(src + `\n//# sourceURL=${f}`)();
@@ -169,4 +178,28 @@ ok(registry.some(el => el.textContent === 'Login Automático'), 'opção "Login 
 store['sigaa_utils_login_auto'] = 'true';
 ok(S2.getLoginAuto() === true, 'getLoginAuto reflete sigaa_utils_login_auto');
 
-console.log('\nTudo certo — wiring OK.');
+// 12. Atualização: o módulo carrega, o fetch traz versão nova e o toast aparece.
+//     Fluxo assíncrono — esvazia a fila de microtasks do fetch stub antes de assertar.
+(async () => {
+  // Flush suficiente para a cadeia fetch → res.text() → armazenar → checarExibicao
+  for (let i = 0; i < 6; i++) await Promise.resolve();
+
+  const toast = documentStub.getElementById('update-toast');
+  ok(toast !== null, 'toast #update-toast criado quando a versão remota é mais nova');
+  if (toast) {
+    ok(toast.children.some(c => c.textContent.includes('Atualização disponível v9.9.9')),
+      'toast mostra "Atualização disponível v9.9.9"');
+    ok(toast.children.some(c => (c.className || '').includes('update-toast-dot')),
+      'toast tem o ponto vermelho (update-toast-dot)');
+    ok(toast.children.some(c => c.tag === 'a' && (c.className || '').includes('update-toast-link')),
+      'toast tem link "Ver no GitHub"');
+    const fechar = toast.children.find(c => (c.className || '').includes('update-toast-fechar'));
+    ok(fechar !== undefined, 'toast tem o botão de fechar (X)');
+    fechar.onclick();
+    ok(store['sigaa_utils_upd_proxima_exibicao'] > Date.now(), 'fechar agenda a próxima exibição (+10min)');
+    ok(documentStub.getElementById('update-toast') === null, 'toast removido do DOM ao fechar');
+  }
+  ok(store['sigaa_utils_upd_versao'] === '9.9.9', 'versão remota gravada em sigaa_utils_upd_versao');
+
+  console.log('\nTudo certo — wiring OK.');
+})();
