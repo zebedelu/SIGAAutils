@@ -17,7 +17,7 @@
 
   // >>> CONFIGURE AQUI: repositório onde o arquivo de versão vive. <<<
   // versao.txt contém só o número, ex: "1.1.0"
-  const RAW_URL = 'https://raw.githubusercontent.com/zebedelu/SIGAAutils/main/versao.txt';
+  const RAW_URL = 'https://raw.githubusercontent.com/zebedelu/SIGAAutils/refs/heads/master/versao.txt';
   const REPO_URL = 'https://github.com/zebedelu/SIGAAutils';
   const VERSAO_LOCAL_FALLBACK = '1.0.0'; // só se chrome.runtime estiver ausente
 
