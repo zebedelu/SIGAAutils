@@ -16,9 +16,16 @@
         "login-auto.js",
         "calendario.js",
         "menu-animacao.js",
+        "horario.js",
         "atualizacao.js"
       ],
       "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["horarios/fotos/*", "horarios/index.json"],
+      "matches": ["https://sig.ifc.edu.br/*"]
     }
   ]
 }

@@ -16,21 +16,34 @@ O **SIGAA Utils** foi criado justamente para isso: **melhorar e personalizar a e
 
 ## Funcionalidades
 
-- **Modo escuro e claro** — alterne o visual da página inteira com um clique na engrenagem. Vídeos e imagens continuam com as cores normais para manter a melhor visualização.
+- **Modo escuro e claro** — alterne o visual da página inteira com um clique.
 
-- **Papel de parede personalizado** — cole a URL de uma imagem e o SIGAA ganha a sua cara. A extensão lembra da sua escolha mesmo depois de fechar o navegador.
+- **Papel de parede personalizado** — use qualquer imagem de fundo no SIGAA.
 
-- **Fogo Roxo** — papel de parede pré-definido com um efeito de fogo roxo animado, para quem quer um visual diferente sem precisar buscar imagens.
+- **Fogo Roxo** — papel de parede pré-definido com efeito de fogo roxo animado.
 
-- **Calendário de avaliações** — o painel de avaliações da página inicial vira um calendário visual dos próximos 30 dias, com cores por disciplina e legenda. Fica muito mais fácil enxergar o que vem pela frente.
+- **Calendário de avaliações** — as avaliações da página inicial viram um calendário visual dos próximos 30 dias.
 
-- **Destaque de notas, faltas e situação** — o boletim fica colorido: notas boas em verde, notas baixas em vermelho, faltas em um gradiente de verde para vermelho e a situação da disciplina em destaque.
+- **Destaque de notas, faltas e situação** — boletim colorido, com notas e situação em destaque.
 
-- **Login automático** — salve seu usuário e senha com um clique na tela de login e, quando quiser, deixe a extensão entrar por você automaticamente.
+- **Login automático** — entre no SIGAA sem digitar usuário e senha.
 
-- **Aviso de atualização** — quando uma versão nova da extensão for publicada, um aviso aparece no canto da tela com um link direto para a página de atualização.
+- **Aviso de atualização** — aviso no canto da tela quando sai uma versão nova.
 
-- **Menus mais fluidos** — os submenus da barra do portal abrem e fecham com uma transição suave, deixando a navegação muito mais agradável.
+- **Menus mais fluidos** — submenus do portal com transição suave.
+
+- **Horários das aulas no SIGAA** — veja o horário da sua turma direto na página inicial.
+
+- **Dados Institucionais mais organizados** — visual mais limpo para os dados institucionais.
+
+- **Notícias ocultas quando não há notícias** — o bloco de notícias some quando está vazio.
+
+## Features
+
+- `dados institucionais`: visual mais limpo e organizado na página inicial (c011f57)
+- `notícias`: bloco de notícias oculto quando não há nada cadastrado
+- `horários`: consulte o horário das aulas direto no SIGAA, escolhendo a turma na lista
+- `horários`: opção "Nenhum" para ocultar os horários da página
 
 ## Demonstração
 
@@ -45,10 +58,10 @@ Na tela de login do SIGAA aparece um botão para salvar suas credenciais. Com a 
 ## Como instalar
 
 1. Baixe ou clone o projeto no seu computador.
-2. Abra o gerenciador de extensões do seu navegador (Chrome ou Edge).
+2. Abra o gerenciador de extensões do seu navegador (chrome://extensions).
 3. Ative o **modo desenvolvedor**.
 4. Clique em **Carregar sem compactação** e selecione a pasta do projeto.
-5. Acesse o SIGAA do IFC e aproveite.
+5. Acesse o SIGAA do IFC (https://sig.ifc.edu.br) e aproveite.
 
 ## Como usar
 
