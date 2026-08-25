@@ -2,7 +2,8 @@
    Destaque de notas nos boletins do SIGAA utils.
    Pinta as notas (classe .nota), as faltas (penúltima nota
    de cada linha — marcação .nota por engano do SIGAA) e a
-   situação (última nota) em cada linha da tabela.
+   situação (última nota) em cada linha da tabela. Na home,
+   esconde o bloco #noticias-portal quando não há notícias.
    Módulo independente: não usa SIGAAUtils, roda sozinho.
    Registrado no manifest.json (document_idle).
    ========================================================= */
@@ -10,6 +11,13 @@
   'use strict';
 
   function init() {
+    // Home: esconde o bloco de notícias quando não há nada cadastrado
+    // (finge de destaque com o texto "Não há notícias cadastradas").
+    const noticias = document.getElementById('noticias-portal');
+    if (noticias && noticias.textContent.includes('N\u00e3o h\u00e1 not\u00edcias cadastradas')) {
+      noticias.style.display = 'none';
+    }
+
     // Notas: verde (8 e 9), laranja, tomate, ameixa (10)
     document.querySelectorAll('.nota').forEach((element) => {
       let cor = 'lime';

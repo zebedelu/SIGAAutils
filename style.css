@@ -1,157 +1,244 @@
 #button-mode {
-   position: fixed;
-   top: 10px;
-   left: 10px;
-   z-index: 999999;
-   width: 32px;
-   height: 32px;
-   padding: 0;
-   cursor: pointer;
-   border-radius: 50%;
-   border: 2px solid black;
-   font-size: 16px;
+	position: fixed;
+	top: 10px;
+	left: 10px;
+	z-index: 999999;
+	width: 32px;
+	height: 32px;
+	padding: 0;
+	cursor: pointer;
+	border-radius: 50%;
+	border: 2px solid black;
+	font-size: 16px;
 }
 
 /* A camada do papel de parede pinta atrás do body — libera o fundo p/ ela aparecer */
 body.wallpaper-active {
-   background: transparent !important;
+	background: transparent !important;
 }
 
 #settings-panel {
-   position: fixed;
-   top: 50px;
-   left: 10px;
-   z-index: 999999;
-   min-width: 220px;
-   background: #fff;
-   border: 1px solid #ccc;
-   border-radius: 8px;
-   padding: 10px;
-   box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-   font-size: 14px;
+	position: fixed;
+	top: 50px;
+	left: 10px;
+	z-index: 999999;
+	min-width: 220px;
+	background: #fff;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	padding: 10px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+	font-size: 14px;
 }
 
 .settings-item {
-   display: block; /* cada item na própria linha */
-   padding: 8px 12px;
-   cursor: pointer;
+	display: block; /* cada item na própria linha */
+	padding: 8px 12px;
+	cursor: pointer;
 }
 
 .settings-item:hover {
-   background: #f0f0f0;
+	background: #f0f0f0;
 }
 
 .url-input {
-   margin-top: 8px;
-   padding: 4px;
-   width: 60%;
-   box-sizing: border-box;
-   font-size: 12px;
+	margin-top: 8px;
+	padding: 4px;
+	width: 60%;
+	box-sizing: border-box;
+	font-size: 12px;
 }
 
 /* Papeis de parede pré-definidos (rádios) */
 #preset-wallpapers {
-   margin-top: 4px;
+	margin-top: 4px;
 }
 
 /* Rádios de preset aninhados sob o papel personalizado */
 #preset-wallpapers .settings-item {
-   padding-left: 24px;
+	padding-left: 24px;
 }
 
 .descricao > * {
-   font-size: 150%;
-   padding: 15px;
+	font-size: 150%;
+	padding: 15px;
 }
 
 td.info {
-    text-align: right !important;
-    font-size: 150% !important;
+	text-align: right !important;
+	font-size: 150% !important;
 }
 .info > center {
-   display: none;
+	display: none;
 }
 th[width="15%"] {
-    display: none;
+	display: none;
 }
 th:nth-child(2) {
-    text-align: right !important;
+	text-align: right !important;
 }
 .foto img {
-   aspect-ratio: 1/1 !important;
-   border-radius: 100%;
-   height :auto !important;
+	aspect-ratio: 1/1 !important;
+	border-radius: 100%;
+	height: auto !important;
 }
 
 #menu-usuario li {
-   width: 49% !important;
+	width: 49% !important;
 }
 .nota {
-   font-weight: bolder;
+	font-weight: bolder;
 }
 
 /* Botão de salvar credenciais na tela de login (login-auto.js) */
 .login-auto-btn {
-   margin-left: 8px;
-   cursor: pointer;
+	margin-left: 8px;
+	cursor: pointer;
 }
 
 .login-auto-msg {
-   font-weight: bold;
+	font-weight: bold;
 }
 
 /* Aviso de atualização (atualizacao.js) — canto superior direito */
 #update-toast {
-   position: fixed;
-   top: 16px;
-   right: 16px;
-   z-index: 1000000;
-   display: flex;
-   align-items: center;
-   gap: 8px;
-   max-width: 320px;
-   background: #fff;
-   border: 1px solid #ccc;
-   border-radius: 8px;
-   padding: 10px 12px;
-   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-   font-size: 14px;
+	position: fixed;
+	top: 16px;
+	right: 16px;
+	z-index: 1000000;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	max-width: 320px;
+	background: #fff;
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	padding: 10px 12px;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+	font-size: 14px;
 }
 
 #update-toast .update-toast-dot {
-   flex: 0 0 auto;
-   width: 10px;
-   height: 10px;
-   border-radius: 50%;
-   background: #e02424;
-   box-shadow: 0 0 6px rgba(224, 36, 36, 0.8);
+	flex: 0 0 auto;
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background: #e02424;
+	box-shadow: 0 0 6px rgba(224, 36, 36, 0.8);
 }
 
 #update-toast .update-toast-text {
-   color: #111;
+	color: #111;
 }
 
 #update-toast .update-toast-link {
-   color: #6d28d9;
-   font-weight: bold;
-   text-decoration: none;
-   white-space: nowrap;
+	color: #6d28d9;
+	font-weight: bold;
+	text-decoration: none;
+	white-space: nowrap;
 }
 
 #update-toast .update-toast-link:hover {
-   text-decoration: underline;
+	text-decoration: underline;
 }
 
 #update-toast .update-toast-fechar {
-   cursor: pointer;
-   margin-left: 4px;
-   border: none;
-   background: none;
-   font-size: 16px;
-   line-height: 1;
-   color: #666;
+	cursor: pointer;
+	margin-left: 4px;
+	border: none;
+	background: none;
+	font-size: 16px;
+	line-height: 1;
+	color: #666;
 }
 
 #update-toast .update-toast-fechar:hover {
-   color: #000;
+	color: #000;
+}
+
+#agenda-docente {
+	max-width: 760px;
+	margin: 24px auto;
+	padding: 20px;
+	background-color: #ffffff;
+	border: 1px solid #e5e7eb;
+	border-radius: 8px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+	font-family:
+		system-ui,
+		-apple-system,
+		"Segoe UI",
+		Roboto,
+		Arial,
+		sans-serif;
+	color: #111827;
+	box-sizing: border-box;
+}
+
+#agenda-docente h4 {
+	margin: 0 0 16px;
+	padding-bottom: 12px;
+	font-size: 18px;
+	font-weight: 600;
+	color: #111827;
+	border-bottom: 1px solid #e5e7eb;
+}
+
+#agenda-docente table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+#agenda-docente td {
+	padding: 10px 12px;
+	font-size: 14px;
+	line-height: 1.5;
+	vertical-align: top;
+	border-bottom: 1px solid #f1f2f4;
+}
+
+#agenda-docente td:first-child {
+	width: 140px;
+	min-width: 120px;
+	color: #4b5563;
+	font-weight: 600;
+}
+
+#agenda-docente td:last-child {
+	word-break: break-word;
+}
+
+#agenda-docente tbody tr:not(:last-child):nth-child(even) {
+	background-color: #fafafa;
+}
+
+#agenda-docente tbody tr:not(:last-child):hover {
+	background-color: #f4f6f8;
+}
+
+#agenda-docente tr:last-child td {
+	border-bottom: none;
+}
+
+/* Reduz o impacto da última linha vazia do seu HTML */
+#agenda-docente td[colspan="2"] {
+	padding: 0;
+	border: 0;
+	line-height: 0;
+}
+
+@media (max-width: 640px) {
+	#agenda-docente {
+		margin: 12px;
+		padding: 16px;
+	}
+
+	#agenda-docente td {
+		padding: 9px 8px;
+	}
+
+	#agenda-docente td:first-child {
+		width: 110px;
+		min-width: 100px;
+	}
 }
