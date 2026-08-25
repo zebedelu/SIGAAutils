@@ -19,7 +19,7 @@
   // versao.txt contém só o número, ex: "1.1.0"
   const RAW_URL = 'https://raw.githubusercontent.com/zebedelu/SIGAAutils/refs/heads/master/versao.txt';
   const REPO_URL = 'https://github.com/zebedelu/SIGAAutils';
-  const VERSAO_LOCAL_FALLBACK = '1.0.0'; // só se chrome.runtime estiver ausente
+  const VERSAO_LOCAL_FALLBACK = '1.1.0'; // só se chrome.runtime estiver ausente
 
   const TOAST_ID = 'update-toast';
   const INTERVALO_EXIBICAO_MS = 10 * 60 * 1000; // 10 min entre exibições
