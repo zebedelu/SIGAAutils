@@ -17,6 +17,7 @@
         "calendario.js",
         "menu-animacao.js",
         "horario.js",
+        "progresso-ano-letivo.js",
         "atualizacao.js"
       ],
       "run_at": "document_idle"

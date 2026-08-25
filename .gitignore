@@ -6,5 +6,6 @@ __pycache__/
 # Scripts de teste (não são carregados pela extensão)
 smoke-test.js
 horario-check.js
+progresso-check.js
 
 horarios_academicos.pdf
