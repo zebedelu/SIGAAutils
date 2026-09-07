@@ -14,6 +14,7 @@
   // ponytail: fila global simples; se um flow travar, o próximo
   // espera — aceitável, são 16 matérias no máximo.
   let fila = Promise.resolve();
+  const cache = new Map(); // frontEndIdTurma -> resultado (2º clique não refaz os POSTs)
 
   function extrairMapaOnclick(form) {
     const a = form.querySelector('a');
@@ -102,10 +103,150 @@
     return { cabecalhos, avaliacoes, linha };
   }
 
+  // --- UI ---
+
+  function classificarNota(texto) {
+    const t = (texto || '').trim();
+    if (!t || t === '--' || t === '-') return '';
+    const n = Number(t.replace(',', '.'));
+    if (Number.isNaN(n)) return '';
+    if (n === 10) return 'nh-n10';
+    if (n < 6) return 'nh-n6';
+    if (n < 8) return 'nh-n8';
+    return 'nh-nok';
+  }
+
+  function montarTabela(parsed) {
+    const wrap = document.createElement('div');
+    wrap.className = 'notas-home-tabela';
+    const table = document.createElement('table');
+    table.className = 'nh-table';
+
+    // Cabeçalho: Matrícula, Nome + (abreviações || —) para as demais células
+    const trh = document.createElement('tr');
+    const headLabels = ['Matrícula', 'Nome'];
+    parsed.linha.celulas.slice(2).forEach((_, i) => {
+      headLabels.push((parsed.avaliacoes[i] && parsed.avaliacoes[i].abrev) || '—');
+    });
+    headLabels.forEach((txt) => {
+      const th = document.createElement('th');
+      th.textContent = txt;
+      trh.appendChild(th);
+    });
+    table.appendChild(trh);
+
+    // Linha de dados do discente
+    const trd = document.createElement('tr');
+    parsed.linha.celulas.forEach((txt, i) => {
+      const td = document.createElement('td');
+      td.textContent = txt;
+      if (i >= 2) {
+        const cls = classificarNota(txt);
+        if (cls) td.className = cls;
+      }
+      trd.appendChild(td);
+    });
+    table.appendChild(trd);
+    wrap.appendChild(table);
+    return wrap;
+  }
+
+  function setStatus(tdPainel, texto) {
+    tdPainel.textContent = '';
+    const span = document.createElement('span');
+    span.className = 'nh-status';
+    span.textContent = texto;
+    tdPainel.appendChild(span);
+  }
+
+  function mostrarResultado(tdPainel, res) {
+    if (!res.ok) {
+      setStatus(tdPainel, res.motivo === 'ver_notas_nao_encontrado'
+        ? 'Notas indisponíveis para esta matéria.' : 'Não foi possível carregar as notas.');
+      return;
+    }
+    const doc = new DOMParser().parseFromString(res.html, 'text/html');
+    const parsed = parsearTabelaNotas(doc);
+    if (!parsed || !parsed.linha) {
+      setStatus(tdPainel, 'Nenhuma nota publicada.');
+      return;
+    }
+    tdPainel.textContent = '';
+    tdPainel.appendChild(montarTabela(parsed));
+  }
+
+  function criarBotao(form) {
+    const mapa = extrairMapaOnclick(form);
+    if (!mapa || !mapa.frontEndIdTurma) return null;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'nh-btn';
+    btn.textContent = 'Ver notas';
+
+    btn.addEventListener('click', () => {
+      // painel já existe (2º clique): reusa
+      let trPainel = form.closest('tr').nextElementSibling;
+      const jaTem = trPainel && trPainel.classList.contains('nh-painel');
+      if (!jaTem) {
+        trPainel = document.createElement('tr');
+        trPainel.className = 'nh-painel';
+        const td = document.createElement('td');
+        td.colSpan = 4;
+        trPainel.appendChild(td);
+        form.closest('tr').insertAdjacentElement('afterend', trPainel);
+      }
+      const tdPainel = trPainel.querySelector('td');
+
+      const chave = mapa.frontEndIdTurma;
+      if (cache.has(chave)) {
+        mostrarResultado(tdPainel, cache.get(chave));
+        return;
+      }
+      setStatus(tdPainel, 'Carregando notas...');
+      fila = fila.then(() =>
+        buscarNotas(form).then((res) => {
+          cache.set(chave, res);
+          mostrarResultado(tdPainel, res);
+        })
+      );
+    });
+    return btn;
+  }
+
+  function init() {
+    if (document.body.dataset.nhInit) return;
+    document.body.dataset.nhInit = '1';
+
+    const style = document.createElement('style');
+    style.id = 'notas-home-css';
+    style.textContent = [
+      '.nh-btn { margin-top: 4px; font-size: 12px; padding: 2px 10px; cursor: pointer; }',
+      '.nh-painel > td { background: #f7f7f7; padding: 8px 12px; }',
+      '.nh-status { color: #666; font-size: 13px; }',
+      '.nh-table { border-collapse: collapse; margin: 4px 0; }',
+      '.nh-table th, .nh-table td { border: 1px solid #ccc; padding: 3px 8px; font-size: 13px; text-align: right; }',
+      '.nh-table th { background: #eef; }',
+      '.nh-table td:nth-child(2) { text-align: left; }',
+      '.nh-n6 { color: tomato; } .nh-n8 { color: orange; } .nh-nok { color: lime; } .nh-n10 { color: plum; }',
+    ].join(' ');
+    document.head.appendChild(style);
+
+    const forms = document.querySelectorAll('form[id^="form_acessarTurmaVirtual"]');
+    Array.from(forms).forEach((form) => {
+      const btn = criarBotao(form);
+      if (btn) form.insertAdjacentElement('afterend', btn);
+    });
+  }
+
   // ponytail: export só para o check Node (notas-home-check.js); browser ignora
   if (typeof process === 'undefined') {
     // no browser não expõe nada
   } else {
-    window.SIGAAUtilsNotasHome = { extrairMapaOnclick, postForm, buscarNotas, parsearTabelaNotas };
+    window.SIGAAUtilsNotasHome = {
+      extrairMapaOnclick, postForm, buscarNotas, parsearTabelaNotas, classificarNota,
+    };
   }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
 })();

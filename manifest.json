@@ -18,6 +18,7 @@
         "menu-animacao.js",
         "horario.js",
         "progresso-ano-letivo.js",
+        "notas-home.js",
         "atualizacao.js"
       ],
       "run_at": "document_idle"
