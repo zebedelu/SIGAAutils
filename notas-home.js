@@ -141,13 +141,17 @@
     });
     table.appendChild(trh);
 
-    // Linha de notas do discente (sem Matrícula/Nome)
+    // Linha de notas do discente (sem Matrícula/Nome); só as 3 últimas
+    // (finais do trimestre) recebem cor
+    const notas = parsed.linha.celulas.slice(2);
     const trd = document.createElement('tr');
-    parsed.linha.celulas.slice(2).forEach((txt) => {
+    notas.forEach((txt, i) => {
       const td = document.createElement('td');
       td.textContent = txt;
-      const cls = classificarNota(txt);
-      if (cls) td.className = cls;
+      if (i >= notas.length - 3) {
+        const cls = classificarNota(txt);
+        if (cls) td.className = cls;
+      }
       trd.appendChild(td);
     });
     table.appendChild(trd);
@@ -163,35 +167,36 @@
     tdPainel.appendChild(span);
   }
 
-  function addBotaoOcultar(tdPainel) {
+  function addBotaoOcultar(tdPainel, btnVer) {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'nh-btn nh-ocultar';
     btn.textContent = 'Ocultar';
     btn.addEventListener('click', () => {
+      if (btnVer) btnVer.style.display = ''; // "Ver notas" volta
       const tr = tdPainel.closest('tr');
       if (tr) tr.remove();
     });
     tdPainel.appendChild(btn);
   }
 
-  function mostrarResultado(tdPainel, res) {
+  function mostrarResultado(tdPainel, res, btnVer) {
     if (!res.ok) {
       setStatus(tdPainel, res.motivo === 'ver_notas_nao_encontrado'
         ? 'Notas indisponíveis para esta matéria.' : 'Não foi possível carregar as notas.');
-      addBotaoOcultar(tdPainel);
+      addBotaoOcultar(tdPainel, btnVer);
       return;
     }
     const doc = new DOMParser().parseFromString(res.html, 'text/html');
     const parsed = parsearTabelaNotas(doc);
     if (!parsed || !parsed.linha) {
       setStatus(tdPainel, 'Nenhuma nota publicada.');
-      addBotaoOcultar(tdPainel);
+      addBotaoOcultar(tdPainel, btnVer);
       return;
     }
     tdPainel.textContent = '';
+    addBotaoOcultar(tdPainel, btnVer); // Ocultar em cima das notas
     tdPainel.appendChild(montarTabela(parsed));
-    addBotaoOcultar(tdPainel);
   }
 
   function criarBotao(form) {
@@ -203,6 +208,7 @@
     btn.textContent = 'Ver notas';
 
     btn.addEventListener('click', () => {
+      btn.style.display = 'none'; // some até o usuário clicar em Ocultar
       // painel já existe (2º clique): reusa
       let trPainel = form.closest('tr').nextElementSibling;
       const jaTem = trPainel && trPainel.classList.contains('nh-painel');
@@ -218,14 +224,14 @@
 
       const chave = mapa.frontEndIdTurma;
       if (cache.has(chave)) {
-        mostrarResultado(tdPainel, cache.get(chave));
+        mostrarResultado(tdPainel, cache.get(chave), btn);
         return;
       }
       setStatus(tdPainel, 'Carregando notas...');
       fila = fila.then(() =>
         buscarNotas(form).then((res) => {
           cache.set(chave, res);
-          mostrarResultado(tdPainel, res);
+          mostrarResultado(tdPainel, res, btn);
         })
       );
     });
@@ -247,7 +253,7 @@
       '.nh-table th { background: #eef; }',
       '.nh-table td:nth-child(2) { text-align: left; }',
       '.nh-n6 { color: tomato; } .nh-n8 { color: orange; } .nh-nok { color: lime; } .nh-n10 { color: plum; }',
-      '.nh-ocultar { margin-left: 8px; }',
+      '.nh-ocultar { margin-bottom: 4px; }',
     ].join(' ');
     document.head.appendChild(style);
 
