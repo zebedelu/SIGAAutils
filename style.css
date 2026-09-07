@@ -227,6 +227,10 @@ th:nth-child(2) {
 	line-height: 0;
 }
 
+#horarios-academicos-button {
+	margin-inline: 8px;
+}
+
 @media (max-width: 640px) {
 	#agenda-docente {
 		margin: 12px;
@@ -240,5 +244,26 @@ th:nth-child(2) {
 	#agenda-docente td:first-child {
 		width: 110px;
 		min-width: 100px;
+	}
+}
+
+#relatorio-paisagem-container {
+	th, td {
+		padding: 8px 4px !important;
+	}
+	caption {
+		display: none;
+	}
+	.notas {
+		overflow: auto !important;
+	}
+	.linhaPar {
+		font-weight: bolder;
+	}
+	#relatorio-rodape {
+		display: none;
+	}
+	div[style="background: #FFFFFF; border: 1px; border-style: solid;"] {
+		display: none;
 	}
 }

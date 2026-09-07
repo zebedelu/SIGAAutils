@@ -12,6 +12,13 @@
   const ALVO = document.getElementById('noticias-portal');
   if (!ALVO || document.getElementById('horario-portal')) return;
 
+  const botao_redirect_horarios = document.createElement('button');
+  botao_redirect_horarios.textContent = 'Abrir Horários Academicos ↗';
+  botao_redirect_horarios.onclick = () => {
+    window.open("https://concordia.ifc.edu.br/horarios-academicos/");
+  }
+  botao_redirect_horarios.id = "horarios-academicos-button";
+
   const CHAVE_TURMA = 'sigaa_utils_horario_turma';
 
   const div = document.createElement('div');
@@ -32,6 +39,7 @@
   document.head.appendChild(css);
   ALVO.parentNode.insertBefore(div, ALVO);
   div.appendChild(select);
+  div.appendChild(botao_redirect_horarios);
   div.appendChild(img);
 
   let turmas = [];
