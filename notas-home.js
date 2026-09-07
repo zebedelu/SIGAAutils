@@ -67,10 +67,45 @@
       .catch((e) => ({ ok: false, motivo: (e && e.motivo) || 'fetch_erro' }));
   }
 
+  function parsearTabelaNotas(doc) {
+    const tabela = doc.querySelector('div.notas > table.tabelaRelatorio');
+    if (!tabela) return null;
+    const trs = tabela.querySelectorAll('tr');
+    if (!trs.length) return null;
+
+    const ths = trs[0].querySelectorAll('th');
+    const cabecalhos = Array.from(ths).map((th) => (th.textContent || '').trim());
+
+    // 2ª tr: sub-cabeçalhos com hidden inputs abrevAval_<id>/denAval_<id>/pesoAval_<id>
+    const avaliacoes = [];
+    if (trs.length > 1) {
+      const inputs = trs[1].querySelectorAll('input[type="hidden"]');
+      const porId = {};
+      Array.from(inputs).forEach((inp) => {
+        const m = /^(abrevAval|denAval|pesoAval)_(.+)$/.exec(inp.getAttribute('id') || '');
+        if (m) {
+          porId[m[2]] = porId[m[2]] || {};
+          porId[m[2]][m[1] === 'abrevAval' ? 'abrev' : m[1] === 'denAval' ? 'den' : 'peso'] =
+            inp.getAttribute('value') || '';
+        }
+      });
+      Object.keys(porId).forEach((id) => avaliacoes.push(porId[id]));
+    }
+
+    // 1ª tr do tbody: célula 0 = matrícula, 1 = nome, restante = notas etc.
+    const tds = tabela.querySelectorAll('tbody tr td');
+    const celulas = Array.from(tds).map((td) => (td.textContent || '').trim());
+    const linha = celulas.length
+      ? { matricula: celulas[0], nome: celulas[1] || '', celulas }
+      : null;
+
+    return { cabecalhos, avaliacoes, linha };
+  }
+
   // ponytail: export só para o check Node (notas-home-check.js); browser ignora
   if (typeof process === 'undefined') {
     // no browser não expõe nada
   } else {
-    window.SIGAAUtilsNotasHome = { extrairMapaOnclick, postForm, buscarNotas };
+    window.SIGAAUtilsNotasHome = { extrairMapaOnclick, postForm, buscarNotas, parsearTabelaNotas };
   }
 })();
