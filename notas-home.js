@@ -45,7 +45,15 @@
     const mapa = extrairMapaOnclick(form);
     if (!mapa) return Promise.resolve({ ok: false, motivo: 'link_turma_nao_encontrado' });
     const action = form.getAttribute('action') || '';
-    return postForm(action, mapa)
+    // O jsfcljs real submete o form inteiro + os params do onclick.
+    // Sem o javax.faces.ViewState o JSF não processa o comando e só
+    // re-renderiza a home — por isso os hidden inputs vão junto.
+    const params = Object.assign({}, mapa);
+    form.querySelectorAll('input[type="hidden"]').forEach((inp) => {
+      const nome = inp.getAttribute('name');
+      if (nome) params[nome] = inp.getAttribute('value') || '';
+    });
+    return postForm(action, params)
       .then((html1) => {
         const doc1 = new DOMParser().parseFromString(html1, 'text/html');
         const vs1 = doc1.querySelector('input[name="javax.faces.ViewState"]');

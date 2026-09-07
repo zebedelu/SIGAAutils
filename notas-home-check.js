@@ -1,7 +1,8 @@
 /* Check de wiring do notas-home.js — NÃO é carregado pela extensão.
    Roda com:  node notas-home-check.js
-   Fixture sintética (sem dados pessoais): form com onclick jsfcljs,
-   resposta 1 com ViewState + link "Ver Notas", resposta 2 com
+   Fixture sintética (sem dados pessoais): form com onclick jsfcljs
+   + hidden ViewState, resposta 1 com ViewState + link "Ver Notas",
+   resposta 2 com
    div.notas > table.tabelaRelatorio (1 avaliação, 3 células de nota). */
 'use strict';
 
@@ -66,6 +67,7 @@ function match(el, sel) {
   if (sel.startsWith('#')) return el.id === sel.slice(1);
   if (sel.startsWith('.')) return el.className.split(/\s+/).includes(sel.slice(1));
   if (sel.startsWith('input[type="hidden"]')) return el.tag === 'input' && el.attrs.type === 'hidden';
+  if (sel.startsWith('input[name="javax.faces.ViewState"]')) return el.tag === 'input' && el.attrs.name === 'javax.faces.ViewState';
   if (sel.startsWith('tbody tr td')) return el.tag === 'td';
   if (sel.startsWith('form[id^=')) return el.tag === 'form' && (el.id || '').startsWith('form_acessarTurmaVirtual');
   return el.tag === sel;
@@ -158,6 +160,7 @@ global.fetch = (url, opts) => {
   chamadas++;
   const body = opts.body;
   if (body.includes('frontEndIdTurma')) {
+    if (!body.includes('vsHome123')) return Promise.reject(new Error('body1 sem ViewState do form'));
     return Promise.resolve({ ok: true, text: () => Promise.resolve('HTML_TURMA_VIRTUAL com Ver Notas') });
   }
   if (!body.includes('javax.faces.ViewState')) return Promise.reject(new Error('body2 sem ViewState'));
@@ -186,6 +189,11 @@ form.attrs.action = '/sigaa/portais/discente/turmas.jsf';
 const linkForm = mkEl('a');
 linkForm.attrs.onclick = "jsfcljs(document.getElementById('form_acessarTurmaVirtual:99'),{'frontEndIdTurma':'987654'},''); return false;";
 form.appendChild(linkForm);
+const vsHome = mkEl('input');
+vsHome.setAttribute('type', 'hidden');
+vsHome.setAttribute('name', 'javax.faces.ViewState');
+vsHome.setAttribute('value', 'vsHome123');
+form.appendChild(vsHome);
 setQuery(form);
 tdDescricao.appendChild(form);
 trOdd.appendChild(tdDescricao);
