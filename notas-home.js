@@ -130,12 +130,10 @@
     const table = document.createElement('table');
     table.className = 'nh-table';
 
-    // Cabeçalho: Matrícula, Nome + (abreviações || —) para as demais células
+    // Cabeçalho: só as abreviações das avaliações (Matrícula/Nome ficam de fora)
     const trh = document.createElement('tr');
-    const headLabels = ['Matrícula', 'Nome'];
-    parsed.linha.celulas.slice(2).forEach((_, i) => {
-      headLabels.push((parsed.avaliacoes[i] && parsed.avaliacoes[i].abrev) || '—');
-    });
+    const headLabels = parsed.linha.celulas.slice(2).map((_, i) =>
+      (parsed.avaliacoes[i] && parsed.avaliacoes[i].abrev) || '—');
     headLabels.forEach((txt) => {
       const th = document.createElement('th');
       th.textContent = txt;
@@ -143,15 +141,13 @@
     });
     table.appendChild(trh);
 
-    // Linha de dados do discente
+    // Linha de notas do discente (sem Matrícula/Nome)
     const trd = document.createElement('tr');
-    parsed.linha.celulas.forEach((txt, i) => {
+    parsed.linha.celulas.slice(2).forEach((txt) => {
       const td = document.createElement('td');
       td.textContent = txt;
-      if (i >= 2) {
-        const cls = classificarNota(txt);
-        if (cls) td.className = cls;
-      }
+      const cls = classificarNota(txt);
+      if (cls) td.className = cls;
       trd.appendChild(td);
     });
     table.appendChild(trd);
@@ -167,20 +163,35 @@
     tdPainel.appendChild(span);
   }
 
+  function addBotaoOcultar(tdPainel) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'nh-btn nh-ocultar';
+    btn.textContent = 'Ocultar';
+    btn.addEventListener('click', () => {
+      const tr = tdPainel.closest('tr');
+      if (tr) tr.remove();
+    });
+    tdPainel.appendChild(btn);
+  }
+
   function mostrarResultado(tdPainel, res) {
     if (!res.ok) {
       setStatus(tdPainel, res.motivo === 'ver_notas_nao_encontrado'
         ? 'Notas indisponíveis para esta matéria.' : 'Não foi possível carregar as notas.');
+      addBotaoOcultar(tdPainel);
       return;
     }
     const doc = new DOMParser().parseFromString(res.html, 'text/html');
     const parsed = parsearTabelaNotas(doc);
     if (!parsed || !parsed.linha) {
       setStatus(tdPainel, 'Nenhuma nota publicada.');
+      addBotaoOcultar(tdPainel);
       return;
     }
     tdPainel.textContent = '';
     tdPainel.appendChild(montarTabela(parsed));
+    addBotaoOcultar(tdPainel);
   }
 
   function criarBotao(form) {
@@ -236,6 +247,7 @@
       '.nh-table th { background: #eef; }',
       '.nh-table td:nth-child(2) { text-align: left; }',
       '.nh-n6 { color: tomato; } .nh-n8 { color: orange; } .nh-nok { color: lime; } .nh-n10 { color: plum; }',
+      '.nh-ocultar { margin-left: 8px; }',
     ].join(' ');
     document.head.appendChild(style);
 
