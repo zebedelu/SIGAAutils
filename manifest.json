@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "SIGAA utils",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Utilitários para o SIGAA do IFC (sig.ifc.edu.br)",
   "content_scripts": [
     {
