@@ -34,6 +34,8 @@ O **SIGAA Utils** foi criado justamente para isso: **melhorar e personalizar a e
 
 - **Horários das aulas no SIGAA** — veja o horário da sua turma direto na página inicial.
 
+- **Notas na página inicial** — veja as notas de cada matéria direto na home, sem abrir a Turma Virtual.
+
 - **Dados Institucionais mais organizados** — visual mais limpo para os dados institucionais.
 
 - **Notícias ocultas quando não há notícias** — o bloco de notícias some quando está vazio.
@@ -44,6 +46,7 @@ O **SIGAA Utils** foi criado justamente para isso: **melhorar e personalizar a e
 - `notícias`: bloco de notícias oculto quando não há nada cadastrado
 - `horários`: consulte o horário das aulas direto no SIGAA, escolhendo a turma na lista
 - `horários`: opção "Nenhum" para ocultar os horários da página
+- `notas na página inicial`: botão "Ver notas" em cada matéria da home, que carrega as notas sem sair da página
 
 ## Demonstração
 
