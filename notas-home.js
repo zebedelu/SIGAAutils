@@ -141,14 +141,15 @@
     });
     table.appendChild(trh);
 
-    // Linha de notas do discente (sem Matrícula/Nome); só as 3 últimas
-    // (finais do trimestre) recebem cor
+    // Linha de notas do discente (sem Matrícula/Nome). As notas do
+    // fechamento do trimestre são a 6ª-última até a 4ª-última — só elas
+    // recebem cor (depois delas vêm média/faltas/situação).
     const notas = parsed.linha.celulas.slice(2);
     const trd = document.createElement('tr');
     notas.forEach((txt, i) => {
       const td = document.createElement('td');
       td.textContent = txt;
-      if (i >= notas.length - 3) {
+      if (i >= notas.length - 6 && i < notas.length - 3) {
         const cls = classificarNota(txt);
         if (cls) td.className = cls;
       }
