@@ -130,26 +130,28 @@
     const table = document.createElement('table');
     table.className = 'nh-table';
 
+    // Notas exibidas: descarta média/faltas/situação (3 últimas células).
+    const todas = parsed.linha.celulas.slice(2);
+    const notas = todas.length > 3 ? todas.slice(0, -3) : todas;
+
     // Cabeçalho: só as abreviações das avaliações (Matrícula/Nome ficam de fora)
     const trh = document.createElement('tr');
-    const headLabels = parsed.linha.celulas.slice(2).map((_, i) =>
-      (parsed.avaliacoes[i] && parsed.avaliacoes[i].abrev) || '—');
-    headLabels.forEach((txt) => {
+    notas.forEach((_, i) => {
       const th = document.createElement('th');
-      th.textContent = txt;
+      th.textContent = (parsed.avaliacoes[i] && parsed.avaliacoes[i].abrev) || '—';
       trh.appendChild(th);
     });
     table.appendChild(trh);
 
     // Linha de notas do discente (sem Matrícula/Nome). As notas do
-    // fechamento do trimestre são a 6ª-última até a 4ª-última — só elas
-    // recebem cor (depois delas vêm média/faltas/situação).
-    const notas = parsed.linha.celulas.slice(2);
+    // fechamento do trimestre são as 3 últimas exibidas — só elas recebem cor.
     const trd = document.createElement('tr');
     notas.forEach((txt, i) => {
       const td = document.createElement('td');
       td.textContent = txt;
-      if (i >= notas.length - 6 && i < notas.length - 3) {
+      // 6ª-última contando as ocultas (média/faltas/situação) = 1ª do fechamento
+      if (i === notas.length - 3) td.style.paddingLeft = '20px';
+      if (i >= notas.length - 3) {
         const cls = classificarNota(txt);
         if (cls) td.className = cls;
       }
