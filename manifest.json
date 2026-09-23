@@ -6,27 +6,27 @@
   "content_scripts": [
     {
       "matches": ["https://sig.ifc.edu.br/*"],
-      "css": ["style.css"],
+      "css": ["core/style.css"],
       "js": [
-        "dark-mode.js",
-        "wallpaper.js",
-        "fire.js",
-        "notas.js",
-        "settings-ui.js",
-        "login-auto.js",
-        "calendario.js",
-        "menu-animacao.js",
-        "horario.js",
-        "progresso-ano-letivo.js",
-        "notas-home.js",
-        "atualizacao.js"
+        "core/dark-mode.js",
+        "core/wallpaper.js",
+        "core/fire.js",
+        "features/notas.js",
+        "core/settings-ui.js",
+        "core/login-auto.js",
+        "features/calendario.js",
+        "features/menu-animacao.js",
+        "features/horario.js",
+        "features/progresso-ano-letivo.js",
+        "features/notas-home.js",
+        "core/atualizacao.js"
       ],
       "run_at": "document_idle"
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["horarios/fotos/*", "horarios/index.json"],
+      "resources": ["content/horarios/fotos/*", "content/horarios/index.json"],
       "matches": ["https://sig.ifc.edu.br/*"]
     }
   ]

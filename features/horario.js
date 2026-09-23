@@ -1,7 +1,7 @@
 /* =========================================================
    Horários acadêmicos — mostra o horário das aulas na home.
-   Independente (não usa SIGAAUtils). Lê horarios/index.json
-   (gerado por horarios/fatiar_horarios.py) e injeta, acima de
+   Independente (não usa SIGAAUtils). Lê content/horarios/index.json
+   (gerado por tools/horarios/fatiar_horarios.py) e injeta, acima de
    #noticias-portal, um bloco com <select> (turma) + <img>
    (imagem fatiada do PDF). A turma escolhida fica salva em
    localStorage (sigaa_utils_horario_turma) e é restaurada na
@@ -43,7 +43,7 @@
   div.appendChild(img);
 
   let turmas = [];
-  fetch(chrome.runtime.getURL('horarios/index.json'))
+  fetch(chrome.runtime.getURL('content/horarios/index.json'))
     .then(r => (r.ok ? r.json() : Promise.reject()))
     .then(lista => {
       turmas = lista;
@@ -74,7 +74,7 @@
     } else {
       const t = turmas.find(x => x.turma === select.value);
       if (!t) return;
-      img.src = chrome.runtime.getURL('horarios/fotos/' + t.arquivo);
+      img.src = chrome.runtime.getURL('content/horarios/fotos/' + t.arquivo);
       img.style.display = 'block';
     }
     localStorage.setItem(CHAVE_TURMA, select.value);

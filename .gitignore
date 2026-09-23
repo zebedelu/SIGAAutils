@@ -3,11 +3,8 @@ afazeres.txt
 
 __pycache__/
 
-# Scripts de teste (não são carregados pela extensão)
-smoke-test.js
-horario-check.js
-progresso-check.js
-notas-home-check.js
+# Testes locais (não são carregados pela extensão, não são commitados)
+tests/
 
 horarios_academicos.pdf
 

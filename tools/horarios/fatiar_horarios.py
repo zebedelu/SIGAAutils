@@ -5,11 +5,11 @@ Padrão do documento (todas as páginas):
     linha 1: "HORÁRIO DAS AULAS <semestre>"   (ex: HORÁRIO DAS AULAS 2026-1)
     linha 2: nome da turma                    (ex: 1A AGROPECUÁRIA)
 
-Cada página vira horarios/fotos/<turma-sanitizada>.webp e um índice
-horarios/index.json (turma -> arquivo) é regravado. A extensão lê esse
-índice para montar o select. Uso padrão:
+Cada página vira content/horarios/fotos/<turma-sanitizada>.webp e um
+índice content/horarios/index.json (turma -> arquivo) é regravado.
+A extensão lê esse índice para montar o select. Uso padrão:
 
-    python fatiar_horarios.py <pdf> [--escala 2.5]
+    python tools/horarios/fatiar_horarios.py <pdf> [--escala 2.5]
 """
 import argparse
 import json
@@ -21,8 +21,9 @@ from pathlib import Path
 import pymupdf  # pip install pymupdf
 from PIL import Image
 
-PASTA_IMAGENS = Path(__file__).parent / "fotos"
-ARQUIVO_INDICE = Path(__file__).parent / "index.json"
+RAIZ = Path(__file__).resolve().parents[2]
+PASTA_IMAGENS = RAIZ / "content" / "horarios" / "fotos"
+ARQUIVO_INDICE = RAIZ / "content" / "horarios" / "index.json"
 QUALIDADE = 82
 
 PADRAO_CABECALHO = re.compile(r"^HOR[ÁA]RIO\s+DAS\s+AULAS\s*(\S*)", re.IGNORECASE)
