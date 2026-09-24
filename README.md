@@ -3,10 +3,37 @@
 </p>
 
 <p align="center">
-  <b>Extensão para navegador que deixa o SIGAA do IFC mais bonito, personalizável e agradável de usar.</b>
+  <b>Viva e siga o SIGAA com a sua cara.</b>
+</p>
+
+<p align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=32&duration=2500&pause=800&color=006400&center=true&vCenter=true&width=600&lines=Siga+esse+SIGAA+novo.&repeat=false" alt="Siga esse SIGAA novo." />
+</p>
+
+<p align="center">
+  <a href="#como-instalar">Como instalar</a> ·
+  <a href="#sobre">Sobre</a> ·
+  <a href="#funcionalidades">Funcionalidades</a> ·
+  <a href="#demonstração">Demonstração</a> ·
+  <a href="#login-automático">Login automático</a> ·
+  <a href="#como-usar">Como usar</a> ·
+  <a href="#contribuindo">Contribuindo</a> ·
+  <a href="#autor">Autor</a>
 </p>
 
 ---
+
+## Como instalar
+
+> Leva menos de 2 minutos. Funciona no Chrome, Edge, Brave e outros navegadores baseados em Chromium.
+
+1. **Baixe o projeto** — clique em **Code → Download ZIP** nesta página do [GitHub](https://github.com/zebedelu/SIGAAutils) e extraia o ZIP (ou clone com `git clone https://github.com/zebedelu/SIGAAutils.git`).
+2. **Abra o gerenciador de extensões** — digite `chrome://extensions` na barra de endereço (no Edge use `edge://extensions`, no Brave use `brave://extensions`).
+3. **Ative o Modo desenvolvedor** — ligue o interruptor no canto superior direito da página de extensões.
+4. **Carregue a extensão** — clique em **Carregar sem compactação** e selecione a pasta do projeto (a que contém o `manifest.json`).
+5. **Pronto** — acesse o [SIGAA do IFC](https://sig.ifc.edu.br) e aproveite.
+
+> **Dica:** depois de baixar uma versão nova da extensão, volte ao gerenciador e clique no botão de recarregar (🔄) do cartão do SIGAA Utils para aplicar as mudanças.
 
 ## Sobre
 
@@ -32,59 +59,47 @@ O **SIGAA Utils** foi criado justamente para isso: **melhorar e personalizar a e
 
 - **Menus mais fluidos** — submenus do portal com transição suave.
 
-- **Horários das aulas no SIGAA** — veja o horário da sua turma direto na página inicial.
+- **Horários das aulas no SIGAA** — veja o horário da sua turma direto na página inicial, com opção "Nenhum" para ocultar quando não quiser.
 
-- **Notas na página inicial** — veja as notas de cada matéria direto na home, sem abrir a Turma Virtual.
+- **Notas na página inicial** — botão "Ver notas" em cada matéria da home, que carrega as notas sem sair da página; com botão "Ocultar" para recolher.
+
+- **Progresso do ano letivo** — barra com a porcentagem do ano letivo já decorrida, direto na página inicial.
 
 - **Dados Institucionais mais organizados** — visual mais limpo para os dados institucionais.
 
 - **Notícias ocultas quando não há notícias** — o bloco de notícias some quando está vazio.
 
-## Features
-
-- `dados institucionais`: visual mais limpo e organizado na página inicial (c011f57)
-- `notícias`: bloco de notícias oculto quando não há nada cadastrado
-- `horários`: consulte o horário das aulas direto no SIGAA, escolhendo a turma na lista
-- `horários`: opção "Nenhum" para ocultar os horários da página
-- `notas na página inicial`: botão "Ver notas" em cada matéria da home, que carrega as notas sem sair da página
-
 ## Demonstração
 
-![Demonstração do funcionamento do SIGAA Utils](assets/demo.gif)
+**Página inicial completa** — modo escuro, papel de parede, horários da turma, progresso do ano letivo e botões de nota:
+
+![Página inicial do SIGAA com o SIGAA Utils aplicado](assets/tela_inicial.png)
+
+**Calendário de avaliações** — as próximas avaliações viram um calendário visual:
+
+![Calendário visual de avaliações](assets/calendario.png)
+
+**Notas na página inicial** — as notas de cada matéria aparecem direto na home, sem abrir a Turma Virtual:
+
+![Notas de cada matéria na página inicial](assets/mostrar_notas.png)
 
 ## Login automático
 
 Na tela de login do SIGAA aparece um botão para salvar suas credenciais. Com a opção "Login Automático" ativada nas configurações, a extensão preenche os dados e entra sozinha — sem digitar nada.
 
-![Tela de login com o recurso de login automático](assets/demo_login_automatico.png)
-
-## Como instalar
-
-1. Baixe ou clone o projeto no seu computador.
-2. Abra o gerenciador de extensões do seu navegador (chrome://extensions).
-3. Ative o **modo desenvolvedor**.
-4. Clique em **Carregar sem compactação** e selecione a pasta do projeto.
-5. Acesse o SIGAA do IFC (https://sig.ifc.edu.br) e aproveite.
-
 ## Como usar
 
 Depois de instalada, a extensão fica disponível em todas as páginas do SIGAA. Basta clicar na **engrenagem** no canto superior esquerdo para abrir o painel de configurações e ativar ou ajustar cada recurso. Todas as preferências ficam salvas automaticamente.
 
-## Próximas funcionalidades
-
-- Mais papéis de parede pré-definidos (além do Fogo Roxo).
-- Novos temas de cores além do modo escuro e claro.
-- Suporte de visual mais limpo para outras telas do portal.
-
 ## Contribuindo
 
-Quer ajudar a melhorar o SIGAA Utils? Toda contribuição é bem-vinda!
+O SIGAA Utils nasceu no IFC, feito por um estudante para os colegas — e ele fica ainda melhor com a comunidade. Se você usa a extensão e quer deixar o SIGAA ainda mais seu, é só se juntar:
 
-- Encontrou um problema? Abra uma **issue** relatando o que aconteceu.
-- Tem uma ideia de funcionalidade? Compartilhe em uma **issue** antes de começar.
-- Quer implementar algo? Faça um **fork**, crie uma branch, implemente e envie um **pull request**.
+- **Achou um bug?** Abra uma [issue](https://github.com/zebedelu/SIGAAutils/issues) contando o que aconteceu (e, se puder, como reproduzir).
+- **Tem uma ideia?** Abra uma issue antes de codar — assim a gente alinha o caminho e ninguém faz o trabalho duas vezes.
+- **Quer implementar?** Dá um **fork**, crie uma branch, implemente e mande um **pull request**.
 
-Seja qual for o tamanho da contribuição, ela será recebida de braços abertos. O projeto está disponível no [GitHub](https://github.com/zebedelu/SIGAAutils).
+Issue pequena, PR enorme, sugestão no chat — tudo é bem-vindo. O código está no [GitHub](https://github.com/zebedelu/SIGAAutils).
 
 ## Autor
 
