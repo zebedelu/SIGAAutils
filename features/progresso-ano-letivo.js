@@ -6,8 +6,8 @@
    #agenda-docente h4 (confirmado com o usuário: é o padrão
    visual que ele quer).
    Independente (não usa SIGAAUtils). Só age se existirem
-   #turmas-portal (com .odd > 2º .info > center com as datas)
-   e #perfil-docente.
+   #turmas-portal (com <center> contendo intervalos
+   "xx/xx/xxxx - xx/xx/xxxx") e #perfil-docente.
    ========================================================= */
 (() => {
   'use strict';
@@ -16,22 +16,22 @@
   const alvo = document.getElementById('perfil-docente');
   if (!portal || !alvo || alvo.querySelector('#progresso-ano-letivo')) return;
 
-  // ponytail: seletores genéricos (.odd / .info) seguem a estrutura atual
-  // do portal; se a marcação mudar, é aqui que se ajusta.
-  const linha = portal.querySelector('.odd');
-  if (!linha) return;
-  const info = linha.querySelectorAll('.info')[1];
-  if (!info) return;
-  const center = info.querySelector('center');
-  if (!center) return;
-
-  const texto = center.textContent.replace(/\s+/g, ' ').trim();
-  const m = texto.match(/(\d{2})\/(\d{2})\/(\d{4})\s*-\s*(\d{2})\/(\d{2})\/(\d{4})/);
-  if (!m) return;
-
-  const inicio = new Date(+m[3], +m[2] - 1, +m[1]); // dd/mm/aaaa
-  const fim = new Date(+m[6], +m[5] - 1, +m[4]);
-  if (fim <= inicio) return;
+  // ponytail: varre todos os <center> de #turmas-portal e coleta TODOS os
+  // intervalos "dd/mm/aaaa - dd/mm/aaaa" (1 linha por turma, vários períodos
+  // na mesma célula); o ano letivo = menor início e maior fim do conjunto.
+  const re = /(\d{2})\/(\d{2})\/(\d{4})\s*-\s*(\d{2})\/(\d{2})\/(\d{4})/g;
+  let inicio = null, fim = null;
+  for (const center of portal.querySelectorAll('center')) {
+    const texto = center.textContent.replace(/\s+/g, ' ');
+    for (const m of texto.matchAll(re)) {
+      const i = new Date(+m[3], +m[2] - 1, +m[1]); // dd/mm/aaaa
+      const f = new Date(+m[6], +m[5] - 1, +m[4]);
+      if (f <= i) continue;
+      if (!inicio || i < inicio) inicio = i;
+      if (!fim || f > fim) fim = f;
+    }
+  }
+  if (!inicio || !fim) return;
 
   const hoje = new Date(); hoje.setHours(0, 0, 0, 0);
   let pct = Math.round(((hoje - inicio) / (fim - inicio)) * 100);
